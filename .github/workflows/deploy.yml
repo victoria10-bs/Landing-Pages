@@ -5,13 +5,17 @@ on:
     branches:
       - main
 
+# Permisos necesarios para interactuar con GitHub Pages directamente
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     environment:
       name: production
-      url: https://victoria10-bs.github.io/Landing-Pages/
 
     steps:
       - name: Descargar código fuente
@@ -29,8 +33,10 @@ jobs:
       - name: Compilar proyecto (Build)
         run: npm run build
 
-      - name: Desplegar en GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Subir artefacto para Pages
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist  # Vite compila todo dentro de la carpeta dist
+          path: ./dist # Sube la carpeta compilada de Vite
+
+      - name: Desplegar en GitHub Pages
+        uses: actions/deploy-pages@v4
